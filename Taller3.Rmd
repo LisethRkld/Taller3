@@ -24,21 +24,29 @@ primeFactors(2048)
   Ahora, tenemos que $a-1=64=4*16$, es decir que también es un múltiplo de 4, cumpliendo así la condición 3).
   Así, el generador congruencial presentado cumple con las condiciones del Teorema de Hull y Dobell, por lo tanto presenta un periodo máximo $p=2048$
 
+_b) Generar 1000 valores tomando como semilla inicial el n de grupo multiplicado por 100 y obtener el tiempo de CPU. Representar gráficamente el ajuste a la densidad teórica y realizar el correspondiente contraste de Kolmogorov-Smirnov._
 
+```{r}
+Ejer <- function(x=1000){
+  c <- replicate(x,0)
+  for( n in 1:x){
+initRANDC(semilla=n*100,a=65,c=1,m=2048)
+c[n] <- RANDCN(1)
+  }
+  return(c)}
+tiempo <- system.time(u <- Ejer(1000)) 
 
-
-
-
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+Veamos la representación gráfica del ajuste a la densidad teórica
+```{r}
+curve(ecdf(u)(x), type = "s", lwd = 2)
+curve(punif(x, 0, 1), add = TRUE)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Contraste de Kolmogorov-Smirnov
+```{r}
+ks.test(u, "punif", 0, 1)
+```
+
+
