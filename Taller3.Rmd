@@ -2,27 +2,30 @@
 title: "Taller3"
 output: html_document
 ---
+# Grupo 2
+***Integrantes:*** *Liseth Recalde, Jorge Sosa*
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+Considera el generador congruencial definido por: 
+$$
+\begin{aligned}
+x_{n+1}  & =(65x_{n}+1)\ \operatorname{mod}\ 2048,\nonumber\\
+u_{n+1}  & =\frac{x_{n+1}}{2048},\ n=0,1,\dots\nonumber
+\end{aligned}
+$$
 
-## R Markdown
+a)  Indicar razonadamente si es de ciclo máximo.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+b)  Generar 1000 valores tomando como semilla inicial el n de grupo 
+multiplicado por 100 y obtener el tiempo de CPU. Representar
+gráficamente el ajuste a la densidad teórica y realizar el
+correspondiente contraste de Kolmogorov-Smirnov.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+c)  Representar los pares de datos $\left( u_{i}, u_{i+1} \right)$, 
+¿se observa algún problema?.
 
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+d)  Estudiar la aleatoriedad de este generador empleando
+repetidamente el test de Ljung-Box, considerando $500$ pruebas con
+muestras de tamaño $50$ y hasta el salto $10$
+$(`Box.test(u,lag=10, type=Ljung)`)$. Comparar el
+ajuste de las distribuciones del estadístico y $p-valor$ a las
+de referencia.
