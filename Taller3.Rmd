@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-a) Indicar razonadamente si es de ciclo máximo.
+_a) Indicar razonadamente si es de ciclo máximo._
 Para determinar si un generador congruencial tiene periodo máximo ($m$) usamos el Teorema de Hull y Dobell. Si se cumplen las siguientes condiciones entonces $p=m$.
   1) ¿$c$ y $m$ son primos relativos?
   Vemos que $c=1$ y $a=65$, por lo tanto sí son primos relativos.
@@ -40,9 +40,15 @@ tiempo <- system.time(u <- Ejer(1000))
 
 Veamos la representación gráfica del ajuste a la densidad teórica
 ```{r}
+hist(u)
+abline(h=1)
+```
+Mientras que en la distribución empírica
+```{r}
 curve(ecdf(u)(x), type = "s", lwd = 2)
 curve(punif(x, 0, 1), add = TRUE)
 ```
+
 
 Contraste de Kolmogorov-Smirnov
 ```{r}
