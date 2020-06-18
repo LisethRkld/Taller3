@@ -1,0 +1,103 @@
+---
+title: "Taller3"
+output: html_document
+---
+# **Grupo 2**
+## **Integrantes:** *Liseth Recalde, Jorge Sosa*
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Considera el generador congruencial definido por:
+$$
+\begin{aligned}
+x_{n+1}  & =(65x_{n}+1)\ \operatorname{mod}\ 2048,\nonumber\\
+u_{n+1}  & =\frac{x_{n+1}}{2048},\ n=0,1,\dots\nonumber
+\end{aligned}
+$$
+
+_a) Indicar razonadamente si es de ciclo máximo._
+
+Para determinar si un generador congruencial tiene periodo máximo ($m$) usamos el Teorema de Hull y Dobell. Si se cumplen las siguientes condiciones entonces $p=m$.
+
+  1) ¿$c$ y $m$ son primos relativos?
+  Vemos que $c=1$ y $a=65$, por lo tanto sí son primos relativos.
+  
+  2) ¿Es $a-1$ múltiplo de todos los factores primos de $m$?
+  Primero tenemos los factores primos de $m$ son $
+
+```{r}
+library("numbers")
+primeFactors(2048)
+```
+  
+  Dado que $a-1=64$ es un número par, es múltiplo de el único factor primo de $m$, que es $2$. Por tanto la segunda condición se cumple.
+  
+  3) Si $m$ es múltiplo de $4$, entonces $a-1$ también lo es.
+  Notemos que $m=2048=4*512$, es decir es un múltiplo de 4.
+  Ahora, tenemos que $a-1=64=4*16$, es decir que también es un múltiplo de 4, cumpliendo así la condición 3).
+  
+  Así, el generador congruencial presentado cumple con las condiciones del Teorema de Hull y Dobell, por lo tanto presenta un periodo máximo $p=2048$
+
+_b) Generar 1000 valores tomando como semilla inicial el n de grupo multiplicado por 100 y obtener el tiempo de CPU. Representar gráficamente el ajuste a la densidad teórica y realizar el correspondiente contraste de Kolmogorov-Smirnov._
+
+```{r eval=T}
+source("Funciones/RANDC.R")
+
+initRANDC(semilla=2*100,a=65,c=1,m=2048)
+tiempo <- system.time(u <- RANDCN(1000)) 
+```
+
+Veamos la representación gráfica del ajuste a la densidad teórica
+```{r}
+hist(u)
+abline(h=1)
+```
+
+Mientras que en la distribución empírica
+```{r}
+curve(ecdf(u)(x), type = "s", lwd = 2)
+curve(punif(x, 0, 1), add = TRUE)
+```
+
+
+Contraste de Kolmogorov-Smirnov
+```{r}
+ks.test(u, "punif", 0, 1)
+```
+
+_c) Representar los pares de datos $\left( u_{i}, u_{i+1} \right)$,¿se observa algún problema?_
+```{r}
+plot(as.ts(u))
+```
+
+```{r}
+xyz <- matrix(u, ncol = 2, byrow = TRUE)
+library(plot3D)
+points3D(xyz[,1], xyz[,2], xyz[,3], colvar = NULL, phi = 60, 
+         theta = -50, pch = 21, cex = 0.2)
+```
+
+_d)  Estudiar la aleatoriedad de este generador empleando repetidamente el test de Ljung-Box, considerando $500$ pruebas con muestras de tamaño $50$ y hasta el salto $10$ $(`Box.test(u,lag=10, type=Ljung)`)$. Comparar el ajuste de las distribuciones del estadístico y $p-valor$ a las de referencia._
+
+```{r eval=TRUE}
+Y <- replicate(500,0) #vector de valores del estadístico 
+Z <- replicate(500,0) #vector de valores del p-valor
+for (i in 1:500){
+  initRANDC(semilla=as.numeric(Sys.time()), 65, 1, 2048)
+  A <- Box.test(RANDCN(50)/(2048) ,lag=10,type="Ljung-Box")
+  Y[i] <- A[1] #Guardamos el estadístico
+  Z[i] <- A[3] #Guardamos el p-valor
+}
+```
+
+Ahora veamos la representación gráfica
+```{r =T}
+hist(as.numeric(Y),main = paste("Histograma del Estadístico"),xlab ="Estadístico", ylab="Frecuencia",)
+```
+
+Mientras que la representación gráfica del p-valor tiene la forma
+```{r include=T}
+hist(as.numeric(Z),main = paste("Histograma de p-valor"),xlab ="p-valor", ylab="Frecuencia",)
+mean(as.numeric(Z))#promedio del p-valor
+```
+
