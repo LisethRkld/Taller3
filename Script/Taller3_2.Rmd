@@ -1,0 +1,77 @@
+---
+title: "Taller3-2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# **Grupo 2**
+## **Integrantes:** *Liseth Recalde, Jorge Sosa*
+
+Se conciderará una prueba de hipótesis para la igualdad de medias de dos poblaciones normales con varianzas iguales $(\sigma=3)$, de tamaño $n=20$, para verificar bajo simulación que el $p-valor$ tiene una distribución uniforme $U(0,1)$,es decir:
+
+$H_{0}: \mu_1 = \mu_2$ 
+
+$H_{a}: \mu_1 \neq \mu_2$
+
+
+Aplicando una prueba $t$, es decir el estadístico de prueba sigue una distribución $t-student$ con $(n_1 + n_2 -2)$ grados de libertad
+
+
+A continuación presentamos la función estadístico que nos ayudará al cáculo del $p-valor$ 
+```{r}
+set.seed(7654321)                                                 
+nsim<-10000                                                       
+n<-20                                                             
+
+estadistico<-function(x,y,mu1,mu2){                                      
+  n1<-length(x)
+  n2<-length(y)
+  xbar<-mean(x)
+  ybar<-mean(y)
+  s1<-sqrt(var(x))
+  s2<-sqrt(var(y))
+  SP<-sqrt(((n1-1)*s1^2 + (n2-1)*s2^2)/(n1-1)+(n2-1))
+  T<-abs((xbar-ybar)-(mu1-mu2)/(SP*sqrt((1/n1)+(1/n2))))
+  p<-2*(1-pt(T,n1+n2-2))                                              
+}
+par(mfrow=c(1,2))
+```
+Caso $1$: $N(\mu1,3)$ y $N(\mu2,3)$ con $\mu1=\mu2=\mu=4$
+
+```{r}
+mu<-4                                                         
+X<-matrix(rnorm(n*nsim,mu,3),ncol=nsim,nrow=n)
+Y<-matrix(rnorm(n*nsim,mu,3),ncol=nsim,nrow=n)
+p<-replicate(nsim,0)
+for(i in 1:nsim){
+  p[i]=estadistico(X[,i],Y[,i],mu,mu)
+}
+                                    
+hist(p,main=c("Caso1:mu = 4"))
+w<-mean(p)
+w
+```
+
+Ahora tomemos el caso $2$: $\mu_1 \neq \mu_2$ supongamos $\mu_1=4$ y $\mu_2=7$
+
+```{r}
+mu1<-4
+mu2<-7
+X<-matrix(rnorm(n*nsim,mu1,3),ncol=nsim,nrow=n)
+Y<-matrix(rnorm(n*nsim,mu2,3),ncol=nsim,nrow=n)
+p<-replicate(nsim,0)
+for(i in 1:nsim){
+  p[i]=estadistico(X[,i],Y[,i],mu1,mu2)
+}
+                                    
+hist(p,main=c("Caso2:mu1 = 4 ; mu2=7"))
+w<-mean(p)
+w
+```
+
+
+
+
