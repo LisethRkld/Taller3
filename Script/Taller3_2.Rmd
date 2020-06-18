@@ -52,7 +52,7 @@ for(i in 1:nsim){
                                     
 hist(p,main=c("Caso1:mu = 4"))
 w<-mean(p)
-w
+w  #promedio p-valor
 ```
 
 Ahora tomemos el caso $2$: $\mu_1 \neq \mu_2$ supongamos $\mu_1=4$ y $\mu_2=7$
@@ -69,7 +69,7 @@ for(i in 1:nsim){
                                     
 hist(p,main=c("Caso2:mu1 = 4 ; mu2=7"))
 w<-mean(p)
-w
+w #promedio p-valor
 ```
 
 
